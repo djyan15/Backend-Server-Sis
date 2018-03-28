@@ -20,6 +20,9 @@ app.use(bodyParser.json());
 var appRoutes = require('./routes/app');
 var usuarioRoutes = require('./routes/usuario');
 var loginRoutes = require('./routes/login');
+var articuloRoutes = require('./routes/articulo');
+var clienteRoutes = require('./routes/cliente');
+var busquedaRoutes = require('./routes/busqueda');
 // Conexion a la base de datos Y si no esta la crea
 
 mongoose.connection.openUri('mongodb://localhost:27017/SistFacturacion', (err, res) => {
@@ -33,6 +36,9 @@ mongoose.connection.openUri('mongodb://localhost:27017/SistFacturacion', (err, r
 //Rutas req = requires res= response next para que continue a la otra instruccion.
 
 app.use('/usuario', usuarioRoutes);
+app.use('/busqueda', busquedaRoutes);
+app.use('/articulo', articuloRoutes);
+app.use('/cliente', clienteRoutes);
 app.use('/login', loginRoutes);
 app.use('/', appRoutes);
 

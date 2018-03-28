@@ -16,7 +16,6 @@ var mdAuth = require('../middlewares/autenticacion');
 var Usuario = require('../models/usuario');
 
 
-
 //Rutas req = requires res= response next para que continue a la otra instruccion.
 //====================================
 // Obtener Usuario
@@ -148,7 +147,7 @@ app.delete('/:id', mdAuth.verificaToken, (req, res) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
-                mensaje: 'ERROR al crear usuario',
+                mensaje: 'ERROR al eliminar usuario',
                 errors: err,
             });
         }

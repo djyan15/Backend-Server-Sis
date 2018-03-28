@@ -19,5 +19,8 @@
     },
     "devDependencies": {
         "nodemon": "^1.17.2"
+    },
+    "compilerOptions": {
+        "target": "ES6"
     }
 }
