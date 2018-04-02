@@ -9,6 +9,14 @@ var mongoose = require('mongoose');
 // Inicializar variables -- aqui se usan las libnrerias
 
 var app = express();
+// COrs 
+app.use(function(req, res, next) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Access-Control-Allow-Methods", "POST, GET, PUT, DELETE, OPTIONS");
+    next();
+
+});
 
 // body parser
 // parse application/x-www-form-urlencoded
@@ -17,12 +25,16 @@ app.use(bodyParser.json());
 
 
 //Importar rutas
+var uploadRoutes = require('./routes/upload');
 var appRoutes = require('./routes/app');
+var imagenesRoutes = require('./routes/imagenes');
 var usuarioRoutes = require('./routes/usuario');
 var loginRoutes = require('./routes/login');
 var articuloRoutes = require('./routes/articulo');
 var clienteRoutes = require('./routes/cliente');
 var busquedaRoutes = require('./routes/busqueda');
+var pagosRoutes = require('./routes/pagos');
+var facturacionRoutes = require('./routes/facturacion');
 // Conexion a la base de datos Y si no esta la crea
 
 mongoose.connection.openUri('mongodb://localhost:27017/SistFacturacion', (err, res) => {
@@ -33,13 +45,25 @@ mongoose.connection.openUri('mongodb://localhost:27017/SistFacturacion', (err, r
 
 });
 
+
+
+
+
+
+
 //Rutas req = requires res= response next para que continue a la otra instruccion.
 
 app.use('/usuario', usuarioRoutes);
 app.use('/busqueda', busquedaRoutes);
+app.use('/pagos', pagosRoutes);
+app.use('/facturacion', facturacionRoutes);
 app.use('/articulo', articuloRoutes);
+app.use('/img', imagenesRoutes);
 app.use('/cliente', clienteRoutes);
+app.use('/upload', uploadRoutes);
 app.use('/login', loginRoutes);
+
+
 app.use('/', appRoutes);
 
 

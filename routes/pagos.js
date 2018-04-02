@@ -1,3 +1,21 @@
+// // Requires  --Importacion de librerias
+// var express = require('express');
+
+// // Inicializar variables -- aqui se usan las libnrerias
+
+// var app = express();
+
+// //Rutas req = requires res= response next para que continue a la otra instruccion.
+
+// app.get('/', (req, res, next) => {
+//     res.status(200).json({
+//         ok: true,
+//         mensaje: 'Peticion realizada correctamente',
+//     });
+// });
+
+// module.exports = app;
+
 // Requires  --Importacion de librerias
 var express = require('express');
 
@@ -9,30 +27,29 @@ var app = express();
 var mdAuth = require('../middlewares/autenticacion');
 
 // importar el esquema de la base de datos
-var Articulo = require('../models/articulo');
+var Pagos = require('../models/pagos');
 
 
 
 // Rutas req = requires res= response next para que continue a la otra instruccion.
 //====================================
-// Obtener articulos
+// Obtener pagos
 //=================================
 app.get('/', (req, res, next) => {
-    Articulo.find({})
-        .populate('usuario', 'nombre email')
-        .exec((err, articulos) => {
+    Pagos.find({})
+        .exec((err, pagos) => {
             if (err) {
                 return res.status(500).json({
                     ok: false,
-                    mensaje: 'ERROR cargando articulos',
+                    mensaje: 'ERROR cargando pagos',
                     errors: err,
                 });
             }
 
-            Articulo.count({}, (err, conteo) => {
+            Pagos.count({}, (err, conteo) => {
                 res.status(200).json({
                     ok: true,
-                    articulos: articulos,
+                    pagos: pagos,
                     total: conteo
                 });
             });
@@ -42,47 +59,47 @@ app.get('/', (req, res, next) => {
 });
 
 //====================================
-// Actualizar Articulos
+// Actualizar pagos
 //===================================
 
 app.put('/:id', mdAuth.verificaToken, (req, res) => {
     var id = req.params.id;
     var body = req.body;
 
-    Articulo.findById(id, (err, articulo) => {
+    Pagos.findById(id, (err, pagos) => {
         if (err) {
             return res.status(500).json({
                 ok: false,
-                mensaje: 'ERROR al buscar usuario',
+                mensaje: 'ERROR al buscar pagos',
                 errors: err,
             });
         }
 
-        if (!articulo) {
+        if (!pagos) {
             return res.status(400).json({
                 ok: false,
-                mensaje: 'El articulo no existe',
-                errors: { message: 'No existe un articulo con ese Id' },
+                mensaje: 'El pago no existe',
+                errors: { message: 'No existe un pago con ese Id' },
             });
         }
 
-        articulo.descripcion = body.descripcion;
-        articulo.precio = body.precio;
-        articulo.estado = body.estado;
-        articulo.usuario = req.usuario._id;
+        pagos.descripcion = body.descripcion;
+        pagos.cantidadDias = body.cantidadDias;
+        pagos.estado = body.estado;
+        pagos.usuario = req.usuario._id;
 
-        articulo.save((err, articuloGuardado) => {
+        pagos.save((err, pagosGuardados) => {
             if (err) {
                 return res.status(400).json({
                     ok: false,
-                    mensaje: 'ERROR al actualizar usuario',
+                    mensaje: 'ERROR al actualizar pagos',
                     errors: err
                 });
             }
 
             res.status(200).json({
                 ok: true,
-                usuario: articuloGuardado,
+                pagos: pagosGuardados,
                 usuariotoken: req.usuario
             });
         });
@@ -90,31 +107,31 @@ app.put('/:id', mdAuth.verificaToken, (req, res) => {
 });
 
 //====================================
-// Crear articulo
+// Crear pagos
 //===================================
 //
 app.post('/', mdAuth.verificaToken, (req, res) => {
     var body = req.body;
 
-    var articulo = new Articulo({
+    var pagos = new Pagos({
         descripcion: body.descripcion,
-        precio: body.precio,
+        cantidadDias: body.cantidadDias,
         estado: body.estado,
         usuario: req.usuario._id
 
     });
 
-    articulo.save((err, articuloGuardado) => {
+    pagos.save((err, pagosGuardado) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
-                mensaje: 'ERROR al crear articulo',
+                mensaje: 'ERROR al crear pagos',
                 errors: err,
             });
         }
         res.status(201).json({
             ok: true,
-            articulo: articuloGuardado,
+            pagos: pagosGuardado,
             usuariotoken: req.usuario,
         });
     });
@@ -125,27 +142,28 @@ app.post('/', mdAuth.verificaToken, (req, res) => {
 
 app.delete('/:id', mdAuth.verificaToken, (req, res) => {
     var id = req.params.id;
-    Articulo.findByIdAndRemove(id, (err, articuloBorrado) => {
+    Pagos.findByIdAndRemove(id, (err, pagosBorrado) => {
         if (err) {
             return res.status(400).json({
                 ok: false,
-                mensaje: 'ERROR al borrar articulo',
+                mensaje: 'ERROR al crear pagos',
                 errors: err,
+                pagos
             });
         }
-        if (!articuloBorrado) {
+        if (!pagosBorrado) {
             return res
                 .status(400)
                 .json({
                     ok: false,
-                    mensaje: 'El articulo con el id ' + id + 'no existe',
-                    errors: { message: 'No existe un articulo con ese Id' },
+                    mensaje: 'El pagos con el id ' + id + 'no existe',
+                    errors: { message: 'No existe un pagos con ese Id' },
                 });
         }
 
         res.status(201).json({
             ok: true,
-            articulo: articuloBorrado,
+            pagos: pagosBorrado,
             usuariotoken: req.usuario
         });
     });

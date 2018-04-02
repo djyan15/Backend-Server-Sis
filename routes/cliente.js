@@ -12,19 +12,24 @@ var Cliente = require('../models/cliente');
 // Obtener clientes
 //=================================
 app.get('/', (req, res, next) => {
-    Cliente.find({}).exec((err, clientes) => {
-        if (err) {
-            return res.status(500).json({
-                ok: false,
-                mensaje: 'ERROR cargando clientes',
-                errors: err,
+
+    var desde = req.query.desde || 0;
+    desde = Number(desde);
+
+
+    Cliente.find({})
+        .skip(desde)
+        .limit(5)
+        .populate('usuario', 'nombre email')
+        .exec((err, clientes) => {
+            if (err) {
+                return res.status(500).json({ ok: false, mensaje: 'ERROR cargando clientes', errors: err });
+            }
+
+            Cliente.count({}, (err, conteo) => {
+                res.status(200).json({ ok: true, clientes: clientes, total: conteo });
             });
-        }
-        res.status(200).json({
-            ok: true,
-            clientes: clientes,
         });
-    });
 });
 
 //====================================
@@ -88,7 +93,7 @@ app.post('/', mdAuth.verificaToken, (req, res) => {
         cedula: body.cedula,
         cuenta: body.cuenta,
         estado: body.estado,
-        usuario: body.usuario._id
+        usuario: req.usuario._id
     });
 
     cliente.save((err, clienteGuardado) => {
