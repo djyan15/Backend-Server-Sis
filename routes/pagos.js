@@ -57,6 +57,41 @@ app.get('/', (req, res, next) => {
 
         });
 });
+//====================================
+// Obtener pagos por id
+//=================================
+app.get('/:id', (req, res, next) => {
+    var id = req.params.id;
+
+    Pagos.findById(id)
+        .populate('usuario', 'nombre img email')
+        .exec((err, pagos) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'ERROR al buscar pagos',
+                    errors: err
+
+                });
+            }
+            if (!pagos) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'No existe pago con el id' + id,
+                    errors: { message: 'No existe ese pago' },
+                });
+            }
+
+            res.status(200).json({
+                ok: true,
+                pagos: pagos,
+
+            });
+
+
+
+        });
+});
 
 //====================================
 // Actualizar pagos

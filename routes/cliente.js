@@ -33,6 +33,44 @@ app.get('/', (req, res, next) => {
 });
 
 //====================================
+// Obtener clientes por id
+//=================================
+app.get('/:id', (req, res, next) => {
+    var id = req.params.id;
+
+    Cliente.findById(id)
+        .populate('usuario', 'nombre img email')
+        .exec((err, cliente) => {
+            if (err) {
+                return res
+                    .status(500)
+                    .json({
+                        ok: false,
+                        mensaje: 'ERROR al buscar cliente',
+                        errors: err,
+                    });
+            }
+            if (!cliente) {
+                return res
+                    .status(400)
+                    .json({
+                        ok: false,
+                        mensaje: 'No existe cliente con el id' + id,
+                        errors: { message: 'No existe ese cliente' },
+                    });
+            }
+
+            res.status(200).json({
+                ok: true,
+                cliente: cliente
+            });
+
+
+
+        });
+});
+
+//====================================
 // Actualizar clientes
 //===================================
 

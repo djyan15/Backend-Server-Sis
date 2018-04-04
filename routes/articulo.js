@@ -40,6 +40,40 @@ app.get('/', (req, res, next) => {
 
         });
 });
+//====================================
+// Obtener articulos por id
+//=================================
+app.get('/:id', (req, res, next) => {
+    var id = req.params.id;
+
+    Articulo.findById(id)
+        .populate('usuario', 'nombre img email')
+        .exec((err, articulo) => {
+            if (err) {
+                return res
+                    .status(500)
+                    .json({
+                        ok: false,
+                        mensaje: 'ERROR al buscar articulo',
+                        errors: err,
+                    });
+            }
+            if (!articulo) {
+                return res
+                    .status(400)
+                    .json({
+                        ok: false,
+                        mensaje: 'No existe articulo con el id' + id,
+                        errors: { message: 'No existe ese articulo' },
+                    });
+            }
+
+            res.status(200).json({ ok: true, articulo: articulo });
+
+
+
+        });
+});
 
 //====================================
 // Actualizar Articulos
