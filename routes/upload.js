@@ -47,8 +47,8 @@ app.put('/:tipo/:id', (req, res, next) => {
     // Obtener nombre del archivo
 
     var archivo = req.files.imagen;
-
     var nombreCortado = archivo.name.split('.');
+    // var nombreCortado = 'skasdikaskda';
     var extensionArchivo = nombreCortado[nombreCortado.length - 1]
 
     // Extensiones validas
@@ -58,7 +58,7 @@ app.put('/:tipo/:id', (req, res, next) => {
             .json({
                 ok: false,
                 mensaje: 'Extension no valida',
-                errors: { message: 'Las extensiones validas son ' + extensionesValidas.join(', ') }
+                errors: { message: 'Las extensiones validas son ' + extensionesValidas.join(', ') + '' + archivo }
             });
     }
     // Nombre de archivo personalizado
@@ -113,7 +113,7 @@ function subirPorTipo(tipo, id, nombreArchivo, res) {
                     .status(200)
                     .json({
                         ok: true,
-                        mensaje: 'Imagen de usuario actualizada',
+                        mensaje: ' de usuario actualizada',
                         usuario: usuarioActualizado,
                     });
             });
