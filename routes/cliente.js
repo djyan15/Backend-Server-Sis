@@ -87,7 +87,7 @@ app.put('/:id', mdAuth.verificaToken, (req, res) => {
             });
         }
 
-        if (!articulo) {
+        if (!cliente) {
             return res.status(400).json({
                 ok: false,
                 mensaje: 'El cliente no existe',
