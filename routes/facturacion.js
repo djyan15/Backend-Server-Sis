@@ -55,7 +55,41 @@ app.get('/', (req, res, next) => {
             });
         });
 });
+//====================================
+// Obtener facturas por id
+//=================================
+app.get('/:id', (req, res, next) => {
 
+    var id = req.params.id;
+    Facturar.findById(id)
+        .populate('usuario', 'nombre email img')
+        .populate('pago')
+        .populate('articulo')
+        .populate('cliente')
+        .exec((err, factura) => {
+            if (err) {
+                return res.status(500).json({
+                    ok: false,
+                    mensaje: 'ERROR cargando facturas',
+                    errors: err
+                });
+            }
+            if (!factura) {
+                return res.status(400).json({
+                    ok: false,
+                    mensaje: 'No existe factura con el id' + id,
+                    errors: { message: 'No existe esa factura' },
+                });
+            }
+
+            res.status(200).json({
+                ok: true,
+                factura: factura,
+
+            });
+
+        });
+});
 //====================================
 // Actualizar facturas
 //===================================

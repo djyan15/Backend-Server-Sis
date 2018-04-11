@@ -47,15 +47,52 @@ app.post('/', (req, res) => {
         var token = jwt.sign({ usuario: usuarioDb }, SEED, { expiresIn: 14400 }); // 4 horas
 
 
-        res.status(200).json({
-            ok: true,
-            usuario: usuarioDb,
-            token: token,
-            id: usuarioDb._id
-        });
+        res
+            .status(200)
+            .json({
+                ok: true,
+                usuario: usuarioDb,
+                token: token,
+                id: usuarioDb._id,
+                menu: obtenerMenu(usuarioDb.role),
+            });
     });
 
 
 });
 
+function obtenerMenu(ROLE) {
+
+    var menu = [{
+            titulo: 'Menu',
+            icono: 'mdi mdi-menu',
+            submenu: [
+                { titulo: 'Dashboard', url: '/dashboard', icono: 'mdi mdi-view-dashboard' },
+                // { titulo: 'ProgressBar', url: '/progress' },
+                { titulo: 'Gráficas', url: '/graficas1', icono: 'mdi mdi-chart-bar' },
+                // { titulo: 'Promesas', url: '/promesas' },
+                // { titulo: 'rxjs', url: '/rxjs' },
+            ],
+        },
+        {
+            titulo: 'Mantenimiento',
+            icono: 'mdi mdi-settings-box',
+            submenu: [
+                { titulo: 'Articulos', url: '/articulos', icono: 'mdi mdi-archive' },
+                // { titulo: 'Usuarios', url: '/usuarios', icono: 'mdi mdi-account-box' },
+                // { titulo: 'Condiciones de Pagos', url: '/pagos', icono: 'mdi mdi-account-card-details' },
+                // { titulo: 'Clientes', url: '/clientes', icono: 'mdi mdi-account-circle' },
+            ]
+        }
+    ];
+
+    if (ROLE === 'ADMIN_ROLE') {
+        menu[1].submenu.unshift({ titulo: 'Usuarios', url: '/usuarios', icono: 'mdi mdi-account-box' }, { titulo: 'Condiciones de Pagos', url: '/pagos', icono: 'mdi mdi-account-card-details' }, { titulo: 'Clientes', url: '/clientes', icono: 'mdi mdi-account-circle' });
+        // return menu;
+
+    }
+    // 
+
+    return menu;
+}
 module.exports = app;

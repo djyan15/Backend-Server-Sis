@@ -16,5 +16,5 @@ var clienteSchema = new Schema({
     usuario: { type: Schema.Types.ObjectId, ref: 'Usuario' },
 });
 
-clienteSchema.plugin(uniqueValidator, { message: 'El {PATH} debe ser único' });
+clienteSchema.plugin(uniqueValidator, { message: 'Existe un cliente con esa {PATH} ' });
 module.exports = mongoose.model('Cliente', clienteSchema);
